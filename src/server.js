@@ -1,4 +1,6 @@
+import { fileURLToPath } from "node:url";
 import express from "express";
+import path from "node:path";
 import "dotenv/config";
 
 const PORT = process.env.PORT;
@@ -14,8 +16,14 @@ import usuarioRouter from "./routes/usuarioRoute.js";
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+//Localizar onde está a pasta public
+app.use("/public", express.static(path.join(__dirname, "public"),))
 
 //Utilizar a rota
 app.use("/usuarios", usuarioRouter);
