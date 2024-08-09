@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url";
 import express from "express";
 import path from "node:path";
+import cors from "cors";
 import "dotenv/config";
 
 const PORT = process.env.PORT;
@@ -28,9 +29,15 @@ app.use(express.json());
 //Localizar onde está a pasta public
 app.use("/public", express.static(path.join(__dirname, "public")));
 
+//CORS
+app.use(
+  cors({
+    origin: "https://localhost:5372",
+  })
+);
+
 //Utilizar a rota
 app.use("/usuarios", usuarioRouter);
-
 app.use("/objetos", objetoRouter);
 
 app.use((request, response) => {

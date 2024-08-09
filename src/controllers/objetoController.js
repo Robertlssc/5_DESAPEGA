@@ -99,6 +99,7 @@ export const getAllObjectUser = async (request, response) => {
     obj.peso,
     obj.cor,
     obj.descricao,
+    obj_img.image_path,
     GROUP_CONCAT(obj_img.image_path SEPARATOR',') AS image_path
     FROM 
       objetos AS obj
@@ -115,10 +116,19 @@ export const getAllObjectUser = async (request, response) => {
         response.status(500).json({ err: "Erro ao buscar objeto" });
         return;
       }
-      const objetosUsuario = data;
+      const objetosUsuario = data.map((objeto) => ({
+        objeto_id: objeto.objeto_id,
+        usuario_id: objeto.usuario_id,
+        nome: objeto.nome,
+        peso: objeto.peso,
+        cor: objeto.cor,
+        descricao: objeto.descricao,
+        image_paths: objeto.image_path.split(","),
+      }));
       response.status(200).json(objetosUsuario);
     });
   } catch (error) {
-    console.error(err);
+    console.error(error);
+    response.status(500).json({ err: "Erro ao processar a requisição" });
   }
 };
