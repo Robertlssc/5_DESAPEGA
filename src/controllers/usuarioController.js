@@ -186,6 +186,13 @@ export const editUser = async (request, response) => {
     const user = await getUserByToken(token);
 
     const { nome, email, telefone } = request.body;
+
+    //Adicionar imagem ao objeto
+    let imagem = user.imagem;
+    if (request.file) {
+      imagem = request.file.filename;
+    }
+
     if (!nome) {
       response.status(400).json({ message: "O nome é obrigatório" });
       return;
@@ -226,11 +233,13 @@ export const editUser = async (request, response) => {
           response.status(404).json({ err: "email já existente" });
           return;
         }
-        /* 
-        
-         */
+
         const updateSql = /*sql*/ `UPDATE usuarios SET ? WHERE ?? = ?`;
-        const updateData = [{ nome, email, telefone }, "usuario_id", id];
+        const updateData = [
+          { nome, email, telefone, imagem },
+          "usuario_id",
+          id,
+        ];
         conn.query(updateSql, updateData, (err) => {
           if (err) {
             console.error(err);
@@ -242,6 +251,8 @@ export const editUser = async (request, response) => {
       });
     });
   } catch (error) {
-    response.status(500).json({ err: error });
+    response.status(error.status || 500).json({
+      message: error.message || "Erro interno no servidor",
+    });
   }
 };

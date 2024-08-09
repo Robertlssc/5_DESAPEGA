@@ -15,7 +15,7 @@ const verifyToken = (request, response, next) => {
 
   try {
     const verified = jwt.verify(token, "SENHASUPERSEGURAEDIFICIL");
-    console.log(verified);
+    //console.log(verified);
     request.usuario = verified;
     next();
   } catch (error) {
